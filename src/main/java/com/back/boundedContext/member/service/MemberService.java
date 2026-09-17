@@ -13,7 +13,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+      this.memberRepository = memberRepository;
     }
 
     public long count() {
@@ -30,5 +30,9 @@ public class MemberService {
 
     public Optional<Member> findByUsername(String username) {
         return memberRepository.findByUsername(username);
+    }
+
+    public Optional<Member> findById(int id) {
+      return memberRepository.findById(id);
     }
 }
