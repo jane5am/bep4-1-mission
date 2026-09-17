@@ -1,6 +1,6 @@
 package com.back.global.jpa.entity;
 
-import com.back.global.initData.GlobalConfig;
+import com.back.global.global.GlobalConfig;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 

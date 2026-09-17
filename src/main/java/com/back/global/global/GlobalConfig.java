@@ -1,4 +1,4 @@
-package com.back.global.initData;
+package com.back.global.global;
 
 import com.back.global.eventPublisher.EventPublisher;
 import lombok.Getter;
