@@ -22,14 +22,17 @@ public class PostFacade {
   private final PostMemberRepository postMemberRepository;
 
   // 엄연히 따지면 얘네도 유즈케이스가 맞는데 너무 작은기능이라 여기다가 했음
+  @Transactional(readOnly = true)
   public long count() {
     return postRepository.count();
   }
 
+  @Transactional(readOnly = true)
   public Optional<Post> findById(int id) {
     return postRepository.findById(id);
   }
 
+  @Transactional
   public RsData<Post> write(Member author, String title, String content){
     return postWriteUseCase.write(author, title, content);
   }

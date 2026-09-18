@@ -18,11 +18,14 @@ public class MemberFacade {
   private final MemberJoinUseCase memberJoinUseCase;
   private final MemberPolicy memberPolicy;
 
+  // 파사드 계층이 트랜잭션을 처리?하는 계층이여서 여기에 걸어야한다.
+  // 여기에 걸면 UseCase에도 걸린다.
   @Transactional(readOnly = true)
   public long count() {
     return memberRepository.count();
   }
 
+  @Transactional
   public RsData<Member> join(String username, String password, String nickname) {
     return memberJoinUseCase.join(username, password, nickname);
   }
