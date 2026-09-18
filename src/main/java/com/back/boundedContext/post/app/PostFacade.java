@@ -3,6 +3,7 @@ package com.back.boundedContext.post.app;
 import com.back.boundedContext.member.domain.Member;
 import com.back.boundedContext.post.domain.Post;
 import com.back.boundedContext.post.out.PostRepository;
+import com.back.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ public class PostFacade {
     return postRepository.findById(id);
   }
 
-  public Post write(Member author, String title, String content){
+  public RsData<Post> write(Member author, String title, String content){
     return postWriteUseCase.write(author, title, content);
   }
 
