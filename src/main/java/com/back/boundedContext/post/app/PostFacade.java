@@ -37,14 +37,13 @@ public class PostFacade {
   @Transactional
   public PostMember syncMember(MemberDto member) {
     PostMember _member = new PostMember(
+            member.getId(),
+            member.getCreateDate(),
+            member.getModifyDate(),
             member.getUsername(),
             "",
             member.getNickname()
     );
-
-    _member.setId(member.getId()); // 원본의 Id, 생성일, 수정일을 복사해서 넣는다
-    _member.setCreateDate(member.getCreateDate()); // 이렇게 바로 엔티티에 set을 해도 되나
-    _member.setModifyDate(member.getModifyDate());
 
     return postMemberRepository.save(_member);
   }
