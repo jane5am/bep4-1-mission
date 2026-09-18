@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Table(name="POST_MEMBER")
 public class PostMember extends ReplicaMember {
-  public PostMember(int id, LocalDateTime createDate, LocalDateTime modifyDate, String username, String password, String nickname) {
-    super(id, createDate, modifyDate, username, password, nickname); // super를 통해 부모 필드로 가서 생성자 생성
+  public PostMember(int id, LocalDateTime createDate, LocalDateTime modifyDate, String username, String password, String nickname, int activityScore) {
+    super(id, createDate, modifyDate, username, password, nickname, activityScore); // super를 통해 부모 필드로 가서 생성자 생성
   }
 
 }
