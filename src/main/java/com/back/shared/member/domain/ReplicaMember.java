@@ -1,4 +1,4 @@
-package com.back.shared.domain;
+package com.back.shared.member.domain;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;

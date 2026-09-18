@@ -1,6 +1,6 @@
 package com.back.boundedContext.cash.domain;
 
-import com.back.shared.domain.ReplicaMember;
+import com.back.shared.member.domain.ReplicaMember;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
