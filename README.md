@@ -156,3 +156,135 @@ private PostMember author;
 
 이 구조를 통해 각 모듈이 자신의 도메인에 필요한 데이터를 독립적으로 관리할 수 있으며, 모듈 간 직접적인 엔티티 의존성을 줄일 수 있습니다.
 
+## 3. 확인 결과
+
+### 3.1 초기 데이터 확인
+
+애플리케이션 실행 후 초기 데이터가 정상적으로 생성되는지 확인했습니다.
+
+초기 데이터 생성 로직은 데이터가 존재하지 않는 경우에만 실행되도록 구성되어 있으며, 게시글 초기 데이터는 총 **6건**입니다.
+
+```text
+[확인 결과]
+
+Post : 6건
+PostComment : 8건
+Member : 6건
+```
+
+DB에서 다음 SQL을 실행하여 데이터 개수를 확인할 수 있습니다.
+
+```sql
+SELECT COUNT(*) FROM member;
+SELECT COUNT(*) FROM post_post;
+SELECT COUNT(*) FROM post_comment;
+```
+
+### 3.2 회원별 게시글·댓글 수 및 활동점수 확인
+
+회원별 게시글 및 댓글 작성 수를 확인하고, 이에 따라 활동점수가 정상적으로 반영되는지 확인했습니다.
+
+확인 결과:
+
+```text
+회원        게시글 수    댓글 수    활동점수
+user1       3           2        11
+user2       2           3        9
+user3       1           3        6
+```
+
+게시글 작성 시 활동점수가 증가하며, 댓글 작성 시에도 작성자의 활동점수가 증가하도록 구현되어 있습니다.
+확인에 사용한 SQL 예시는 다음과 같습니다.
+
+```sql
+SELECT username, activity_score
+FROM member
+ORDER BY id;
+```
+
+게시글과 댓글 작성 수는 각각 다음과 같이 확인할 수 있습니다.
+
+```sql
+SELECT author_id, COUNT(*)
+FROM post_post
+GROUP BY author_id;
+
+SELECT author_id, COUNT(*)
+FROM post_comment
+GROUP BY author_id;
+```
+
+### 3.3 원본 회원 데이터와 복제 회원 데이터 일치 확인
+
+Member 모듈의 원본 회원 데이터와 Post 모듈의 `PostMember` 복제 데이터가 정상적으로 동기화되는지 확인했습니다.
+
+회원 생성 또는 수정 시 다음 흐름으로 복제 데이터가 갱신됩니다.
+
+```text
+Member
+  ↓
+MemberJoinedEvent / MemberModifiedEvent
+  ↓
+PostEventListener
+  ↓
+PostMember
+```
+
+확인 결과:
+
+```text
+원본 Member       복제본 PostMember
+------------------------------------
+user1              user1       [일치]
+user2              user2       [일치]
+user3              user3       [일치]
+```
+
+또한 회원 정보 수정 후에도 이벤트를 통해 `PostMember`의 데이터가 함께 변경되는지 확인했습니다.
+
+### 3.4 애플리케이션 재실행 시 중복 데이터 여부 확인
+
+애플리케이션을 종료한 후 다시 실행하여 초기 데이터가 중복 생성되지 않는지 확인했습니다.
+
+재실행 전:
+
+```text
+Post : 6건
+PostComment : 8건
+```
+
+재실행 후:
+
+```text
+Post : 6건
+PostComment : 8건
+```
+
+재실행 전후 데이터 개수가 동일하여 **초기 데이터가 중복 생성되지 않는 것을 확인했습니다.**
+
+확인에 사용한 SQL:
+
+```sql
+SELECT COUNT(*) FROM post_post;
+SELECT COUNT(*) FROM post_comment;
+```
+
+### 3.5 보안 팁 API 호출 결과
+
+회원 API의 `/api/v1/member/members/randomSecureTip` 엔드포인트를 호출하여 정상적으로 응답하는지 확인했습니다.
+
+요청:
+
+```http
+GET /api/v1/member/members/randomSecureTip
+```
+
+응답:
+
+```text
+HTTP 200 OK
+비밀번호의 유효기간은 90일 입니다.
+```
+
+실제 API 호출 결과를 통해 엔드포인트가 정상적으로 동작하는 것을 확인했습니다.
+
