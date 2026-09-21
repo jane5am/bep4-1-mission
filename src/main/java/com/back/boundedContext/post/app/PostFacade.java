@@ -16,19 +16,18 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PostFacade {
 
-  private final PostRepository postRepository;
+  private final PostSupport postSupport;
+  private final PostSyncMemberUseCase postSyncMemberUseCase;
   private final PostWriteUseCase postWriteUseCase;
-  private final PostMemberRepository postMemberRepository;
 
-  // 엄연히 따지면 얘네도 유즈케이스가 맞는데 너무 작은기능이라 여기다가 했음
-  @Transactional(readOnly = true)
-  public long count() {
-    return postRepository.count();
+  @Transactional
+  public PostMember syncMember(MemberDto member) {
+    return postSyncMemberUseCase.syncMember(member);
   }
 
   @Transactional(readOnly = true)
   public Optional<Post> findById(int id) {
-    return postRepository.findById(id);
+    return postSupport.findById(id);
   }
 
   @Transactional
@@ -36,23 +35,13 @@ public class PostFacade {
     return postWriteUseCase.write(author, title, content);
   }
 
-  @Transactional
-  public PostMember syncMember(MemberDto member) {
-    PostMember _member = new PostMember(
-            member.getId(),
-            member.getCreateDate(),
-            member.getModifyDate(),
-            member.getUsername(),
-            "",
-            member.getNickname(),
-            member.getActivityScore()
-    );
-
-    return postMemberRepository.save(_member);
+  @Transactional(readOnly = true)
+  public long count() {
+    return postSupport.count();
   }
 
   @Transactional(readOnly = true)
   public Optional<PostMember> findMemberByUsername(String username) {
-    return postMemberRepository.findByUsername(username);
+    return postSupport.findMemberByUsername(username);
   }
 }
