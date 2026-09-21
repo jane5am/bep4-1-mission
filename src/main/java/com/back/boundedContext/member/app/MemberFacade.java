@@ -1,8 +1,6 @@
 package com.back.boundedContext.member.app;
 
 import com.back.boundedContext.member.domain.Member;
-import com.back.boundedContext.member.domain.MemberPolicy;
-import com.back.boundedContext.member.out.MemberRepository;
 import com.back.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,15 +12,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberFacade {
 
-  private final MemberRepository memberRepository;
+  private final MemberSupport memberSupport;
   private final MemberJoinUseCase memberJoinUseCase;
-  private final MemberPolicy memberPolicy;
+  private final MemberGetRandomSecureTipUseCase memberGetRandomSecureTipUseCase;
 
   // 파사드 계층이 트랜잭션을 처리?하는 계층이여서 여기에 걸어야한다.
   // 여기에 걸면 UseCase에도 걸린다.
   @Transactional(readOnly = true)
   public long count() {
-    return memberRepository.count();
+    return memberSupport.count();
   }
 
   @Transactional
@@ -33,16 +31,15 @@ public class MemberFacade {
 
   @Transactional(readOnly = true)
   public Optional<Member> findByUsername(String username) {
-    return memberRepository.findByUsername(username);
+    return memberSupport.findByUsername(username);
   }
 
   @Transactional(readOnly = true)
   public Optional<Member> findById(int id) {
-    return memberRepository.findById(id);
+    return memberSupport.findById(id);
   }
 
   public String getRandomSecureTip() {
-    return "비밀번호의 유효기간은 %d일 입니다."
-            .formatted(memberPolicy.getNeedToChangePasswordDays());
+    return memberGetRandomSecureTipUseCase.getRandomSecureTip();
   }
 }
