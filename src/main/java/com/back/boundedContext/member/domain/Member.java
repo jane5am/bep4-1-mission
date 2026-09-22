@@ -18,12 +18,23 @@ public class Member extends SourceMember {
       super(username, password, nickname);
     }
 
-    public int increaseActivityScore(int amount) {
+  public MemberDto toDto() {
+    return new MemberDto(
+            getId(),
+            getCreateDate(),
+            getModifyDate(),
+            getUsername(),
+            getNickname(),
+            getActivityScore()
+    );
+  }
+
+  public int increaseActivityScore(int amount) {
       if (amount == 0) return getActivityScore(); // 0 점일때는 굳이 이벤트 발행해서 그 0점을 복사하는 불필요한 작업 없애기위함
 
       setActivityScore(getActivityScore() + amount);
       publishEvent(
-              new MemberModifiedEvent(new MemberDto(this))
+              new MemberModifiedEvent(toDto())
       );
       return getActivityScore();
     }
