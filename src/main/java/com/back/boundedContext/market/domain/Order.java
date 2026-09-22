@@ -1,13 +1,14 @@
 package com.back.boundedContext.market.domain;
 
 import com.back.global.jpa.entity.BaseIdAndTime;
+import com.back.shared.market.dto.OrderDto;
+import com.back.shared.market.event.MarketOrderPaymentRequestedEvent;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.jaxb.SpringDataJaxb;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import static jakarta.persistence.FetchType.LAZY;
 public class Order extends BaseIdAndTime {
   @ManyToOne(fetch = LAZY)
   private MarketMember buyer;
+  private LocalDateTime cancelDate;
   private LocalDateTime requestPaymentDate;
   private LocalDateTime paymentDate;
   private long price;
@@ -63,12 +65,20 @@ public class Order extends BaseIdAndTime {
     return paymentDate != null;
   }
 
+  public boolean isCanceled() {
+    return cancelDate != null;
+  }
+
+  public boolean isPaymentInProgress() {
+    return requestPaymentDate != null && paymentDate == null && cancelDate == null;
+  }
+
   public void requestPayment(long pgPaymentAmount) {
     requestPaymentDate = LocalDateTime.now();
 
     publishEvent(
             new MarketOrderPaymentRequestedEvent(
-                    new SpringDataJaxb.OrderDto(this),
+                    new OrderDto(this),
                     pgPaymentAmount
             )
     );
