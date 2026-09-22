@@ -22,4 +22,13 @@ public class CashSupport {
   public Optional<Wallet> findWalletByHolder(CashMember holder) {
     return walletRepository.findByHolder(holder);
   }
+
+  public Optional<Wallet> findWalletByHolderId(int holderId) {
+    return walletRepository.findByHolderId(holderId);
+  }
+
+  public Optional<Wallet> findHoldingWallet() {
+    return walletRepository.findByHolderId(CashPolicy.HOLDING_MEMBER_ID);
+  }
+
 }
